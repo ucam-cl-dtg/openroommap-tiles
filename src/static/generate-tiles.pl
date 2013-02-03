@@ -17,7 +17,7 @@ my $stderrroomvectors = 0;
 my $roomFill = $objects == 0 ? 'fill="#cccccc" fill-opacity="0.10" stroke="none" vector-effect="non-scaling-stroke" ' : 'fill="none" stroke="none" vector-effect="non-scaling-stroke" ';
 my $roomStroke = 'fill="none" stroke="#000000" stroke-width="0.05" stroke-linejoin="round" stroke-linecap="round" vector-effect="non-scaling-stroke" ';
 
-my $dbh = DBI->connect("dbi:Pg:dbname=openroommap;host=localhost;port=5432","orm","openroommap", {AutoCommit => 0}) or
+my $dbh = DBI->connect("dbi:Pg:dbname=openroommap;host=localhost;port=5433","orm","openroommap", {AutoCommit => 0}) or
  die "Failed to connect to database\n";
 
 my $r = $dbh->selectall_arrayref("SELECT -max(x),-min(x),min(y),max(y) from floorpoly_table;");
