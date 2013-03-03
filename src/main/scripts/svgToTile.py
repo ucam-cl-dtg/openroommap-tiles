@@ -9,6 +9,8 @@ import re
 import sys
 inkscape = "/usr/bin/inkscape"
 
+DEBUG=0
+
 class CompletedException(Exception):
     def __init__(self,width,height):
         self.width = width
@@ -45,7 +47,8 @@ def slice(filename,w,h,renderSizePx,tileSizePx,workingDir):
                       pieceSize*(x+1),
                       pieceSize*(y+1))
             tileName = "%s/tile-%d-%d-%d-%d.png" % (workingDir,renderSizePx,tileSizePx,x,y)
-            print "RENDER\t%s" % (tileName)
+            if DEBUG != 0:
+                print "RENDER\t%s" % (tileName)
             check_output([inkscape,
                           "-a","%f:%f:%f:%f" % bounds,
                           "-w",str(tileSizePx),
@@ -68,7 +71,8 @@ def sliceFiles(workingDir,targetTileSize):
                                                "tile-%d-%d-%d-%d.png" % (renderSizePx,targetTileSize,realX+i,realY+j))
                         if not os.path.exists(filename):
                             im = master.crop((x,y,x+targetTileSize,y+targetTileSize))
-                            print "CROP\t%s" %(filename)
+                            if DEBUG != 0:
+                                print "CROP\t%s" %(filename)
                             im.save(filename)
 
 def main(svgfile,workingdir,template):
