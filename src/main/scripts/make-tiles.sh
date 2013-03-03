@@ -11,4 +11,5 @@ SVGFILE=$PREFIX-$FLOOR-$GENERATE_OPS.svg
 echo "Generating SVG for floor $FLOOR: $GENERATE_OPS"
 perl generate-tiles.pl $FLOOR $GENERATE_OPS > $SVGFILE
 mkdir -p tile
+echo "Generating tiles from SVG"
 python svgToTile.py $SVGFILE temp tile/$PREFIX-$FLOOR
