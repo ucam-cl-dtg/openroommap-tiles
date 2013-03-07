@@ -22,7 +22,7 @@ if [ "$POLLED_UPDATE" != "$STORED_UPDATE" ]; then
     for floor in `seq 0 1 2`; do
 	ssh $HOST -f -L 5433:localhost:5432 sleep 3
 	perl generate-tiles.pl $floor people,rooms,objects,desksOnly > floor$floor-allocation.svg
-	inkscape floor$floor-allocation.svg -A floor$floor-allocation.pdf
+	inkscape floor$floor-allocation.svg -A tile/floor$floor-allocation.pdf
     done
 
     `echo $POLLED_UPDATE > lastupdateid.txt`

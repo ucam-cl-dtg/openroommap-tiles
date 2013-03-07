@@ -12,9 +12,6 @@
       <outputDirectory>static</outputDirectory>
       <includes>
 	<include>tile/*</include>
-	<include>floor0-allocation.pdf</include>
-	<include>floor1-allocation.pdf</include>
-	<include>floor2-allocation.pdf</include>
       </includes>
     </fileSet>
   </fileSets>
