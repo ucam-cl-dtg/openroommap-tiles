@@ -8,10 +8,10 @@
 
   <fileSets>
     <fileSet>
-      <directory>target/${target.class}</directory>      
-      <outputDirectory>static</outputDirectory>
+      <directory>target/${target.class}/tile</directory>      
+      <outputDirectory>.</outputDirectory>
       <includes>
-	<include>tile/*</include>
+	<include>*</include>
       </includes>
     </fileSet>
   </fileSets>
