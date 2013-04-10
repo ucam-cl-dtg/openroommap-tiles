@@ -188,7 +188,7 @@ foreach my $row (@$r) {
 	    my ($rx,$ry) = ($ws*0.125,$ws*0.125);
 	    my ($xs,$ys) = ($x - $ws/2, $y - $hs/2 - 0.08);
 	    $document .= "<rect style=\"opacity:1;fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:0.04;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:0;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1\" height=\"$hs\" width=\"$ws\" x=\"$xs\" y=\"$ys\" ry=\"$ry\" rx=\"$rx\" />";
-	    $document .= "<text x=\"$x\" y=\"$y\" dominant-baseline=\"central\" style=\"font-size:0.2934762px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:100%;writing-mode:lr-tb;text-anchor:middle;opacity:1;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:DejaVu Sans;inkscape-font-specification:DejaVu Sans\">$label</text></g>\n";
+	    $document .= "<text x=\"$x\" y=\"$y\" dominant-baseline=\"central\" style=\"font-size:0.4px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:100%;writing-mode:lr-tb;text-anchor:middle;opacity:1;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:DejaVu Sans;inkscape-font-specification:DejaVu Sans\">$label</text></g>\n";
 	}
 
     }
