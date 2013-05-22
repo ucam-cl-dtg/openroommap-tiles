@@ -24,7 +24,11 @@ if [ "$POLLED_UPDATE" != "$STORED_UPDATE" ]; then
 	perl generate-tiles.pl $floor people,rooms,objects,desksOnly > floor$floor-allocation.svg
 	inkscape floor$floor-allocation.svg -A allocation.pdf
 	gs -o tile/floor$floor-allocation.pdf  -sDEVICE=pdfwrite  -sPAPERSIZE=a4  -dFIXEDMEDIA  -dPDFFitPage  -dCompatibilityLevel=1.4 allocation.pdf
+
+	python svgToTile.py floor$floor-labels.svg temp tile/sublabel-$floor
     done
+
+
 
     `echo $POLLED_UPDATE > lastupdateid.txt`
 fi
