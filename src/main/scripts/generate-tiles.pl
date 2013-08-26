@@ -6,18 +6,19 @@
 use DBI;
 use strict;
 
-my $floor = $ARGV[0];
-my $people = ($ARGV[1] =~ /people/ ? 1 : 0);
-my $rooms = ($ARGV[1] =~ /rooms/ ? 1 : 0);
-my $objects = ($ARGV[1] =~ /objects/ ? 1 : 0);
-my $desksOnly = ($ARGV[1] =~ /desksOnly/ ? 1 : 0);
-my $labels = ($ARGV[1] =~ /labels/ ? 1 : 0);
+my $port = $ARGV[0];
+my $floor = $ARGV[1];
+my $people = ($ARGV[2] =~ /people/ ? 1 : 0);
+my $rooms = ($ARGV[2] =~ /rooms/ ? 1 : 0);
+my $objects = ($ARGV[2] =~ /objects/ ? 1 : 0);
+my $desksOnly = ($ARGV[2] =~ /desksOnly/ ? 1 : 0);
+my $labels = ($ARGV[2] =~ /labels/ ? 1 : 0);
 my $stderrroomvectors = 0;
 
 my $roomFill = $objects == 0 ? 'fill="#cccccc" fill-opacity="0.10" stroke="none" vector-effect="non-scaling-stroke" ' : 'fill="none" stroke="none" vector-effect="non-scaling-stroke" ';
 my $roomStroke = 'fill="none" stroke="#000000" stroke-width="0.05" stroke-linejoin="round" stroke-linecap="round" vector-effect="non-scaling-stroke" ';
 
-my $dbh = DBI->connect("dbi:Pg:dbname=openroommap;host=localhost;port=5433","orm","openroommap", {AutoCommit => 0}) or
+my $dbh = DBI->connect("dbi:Pg:dbname=openroommap;host=localhost;port=$port","orm","openroommap", {AutoCommit => 0}) or
  die "Failed to connect to database\n";
 
 my $r = $dbh->selectall_arrayref("SELECT -max(x),-min(x),min(y),max(y) from floorpoly_table;");
