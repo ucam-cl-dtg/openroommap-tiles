@@ -3,7 +3,7 @@
 get_port() {
    # strip out username if there
    HOST=`echo $1 | sed -e "s/^.*@//"`
-   echo $(( `dig +short $1 | sed -e "s/\.//g"` % 55535 + 10000 ))
+   echo $(( `dig +short $HOST | tail -n1 | sed -e "s/\.//g"` % 55535 + 10000 ))
 }
 
 set -e
