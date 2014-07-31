@@ -16,12 +16,14 @@ my $labels = ($ARGV[2] =~ /labels/ ? 1 : 0);
 my $stderrroomvectors = 0;
 
 my $roomFill = $objects == 0 ? 'fill="#cccccc" fill-opacity="0.10" stroke="none" vector-effect="non-scaling-stroke" ' : 'fill="none" stroke="none" vector-effect="non-scaling-stroke" ';
-my $roomStroke = 'fill="none" stroke="#000000" stroke-width="0.05" stroke-linejoin="round" stroke-linecap="round" vector-effect="non-scaling-stroke" ';
+my $roomStroke = 'fill="none" stroke="#000000" stroke-width="0.25" stroke-linejoin="round" stroke-linecap="round" vector-effect="non-scaling-stroke" ';
 
 my $dbh = DBI->connect("dbi:Pg:dbname=openroommap;host=localhost;port=$port","orm","openroommap", {AutoCommit => 0}) or
  die "Failed to connect to database\n";
 
-my $r = $dbh->selectall_arrayref("SELECT -max(x),-min(x),min(y),max(y) from floorpoly_table;");
+my $scale=10;
+
+my $r = $dbh->selectall_arrayref("SELECT -max(x)*$scale,-min(x)*$scale,min(y)*$scale,max(y)*$scale from floorpoly_table;");
 my ($minX,$maxX,$minY,$maxY) = @{$r->[0]};   
 my ($width,$height) = ($maxX-$minX,$maxY-$minY);
 if ($width < $height) {
@@ -44,7 +46,7 @@ foreach my $row (@$r) {
 	my $roomname = $rm->[0]->[0]; 
 	print STDERR "# $roomname\n";
     }
-    my $v = $dbh->selectall_arrayref("SELECT x,y,edgetarget FROM floorpoly_table where polyid=$polyid  order by vertexnum ASC");
+    my $v = $dbh->selectall_arrayref("SELECT x*$scale,y*$scale,edgetarget FROM floorpoly_table where polyid=$polyid  order by vertexnum ASC");
     my $fillData;
     my $strokeData;
     my $pet;
@@ -95,7 +97,7 @@ foreach my $item (@$items) {
     my @itemPolys;
     foreach my $polyDef (@$polyDefs) {
 	my ($poly_id,$fill_colour,$fill_alpha,$edge_colour,$edge_alpha) = @$polyDef;
-	my $vertices = $dbh->selectall_arrayref("SELECT x,y FROM item_polygon_vertex_table WHERE poly_id=$poly_id ORDER BY vertex_id asc");
+	my $vertices = $dbh->selectall_arrayref("SELECT x*$scale,y*$scale FROM item_polygon_vertex_table WHERE poly_id=$poly_id ORDER BY vertex_id asc");
 	my @polyVertices;
 	foreach my $vertex (@$vertices) {
 	    my ($v1,$v2) = ($vertex->[0],$vertex->[1]);
@@ -103,7 +105,7 @@ foreach my $item (@$items) {
 	}
 	push(@itemPolys,[&intToRGB($fill_colour),$fill_alpha,&intToRGB($edge_colour),$edge_alpha,\@polyVertices]);
     }
-    my $placements = $dbh->selectall_arrayref("select x,y,theta,flipped,floor_id from placed_item_update_table, placed_item_table where last_update = update_id and item_def_id = $defid and floor_id=$floor and deleted='f'");
+    my $placements = $dbh->selectall_arrayref("select x*$scale,y*$scale,theta,flipped,floor_id from placed_item_update_table, placed_item_table where last_update = update_id and item_def_id = $defid and floor_id=$floor and deleted='f'");
   LABEL: foreach my $placement (@$placements) {
 	my ($cx,$cy,$theta,$flipped,$floor) = @$placement;
 	$theta = -$theta / 180 * 3.14159265358979323846;
@@ -122,7 +124,7 @@ foreach my $item (@$items) {
 	    }
 	    $pathData =~ s/^L/M/;
 	    $pathData .= "z";
-	    if ($objects == 1) { $document .= "<path d='$pathData' fill='$fill_colour' fill-opacity='$fill_alpha' stroke='$edge_colour' stroke-opacity='$edge_alpha' stroke-width='0.05' vector-effect='non-scaling-stroke'/>\n"; }
+	    if ($objects == 1) { $document .= "<path d='$pathData' fill='$fill_colour' fill-opacity='$fill_alpha' stroke='$edge_colour' stroke-opacity='$edge_alpha' stroke-width='0.25' vector-effect='non-scaling-stroke'/>\n"; }
 	}
     }
 }
@@ -131,7 +133,7 @@ my %usedRooms;
 my $r = $dbh->selectall_arrayref("SELECT polyid from submappoly_table where submapid =$floor;");
 foreach my $row (@$r) {
     my $polyid = $row->[0];
-    my $v = $dbh->selectall_arrayref("SELECT x,y,edgetarget FROM floorpoly_table where polyid=$polyid  order by vertexnum ASC");
+    my $v = $dbh->selectall_arrayref("SELECT x*$scale,y*$scale,edgetarget FROM floorpoly_table where polyid=$polyid  order by vertexnum ASC");
     my $fillData;
     my $strokeData;
     my $pet;
@@ -174,22 +176,22 @@ foreach my $row (@$r) {
 		my $w = 2.5195167;
 		my $bx = $midx-$w/2;
 		my $by = $midy-$h/2-0.252;
-		$document .= "<g><rect height=\"$h\" width=\"$w\" rx=\"0.44194168\" ry=\"0.31694031\" x=\"$bx\" y=\"$by\" style=\"opacity:1;fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:0.06;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:0;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1\" /><text x=\"$midx\" y=\"$midy\" dominant-baseline=\"central\" style=\"font-size:0.6934762px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:100%;writing-mode:lr-tb;text-anchor:middle;opacity:1;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans;-inkscape-font-specification:Bitstream Vera Sans\">$rmrow->[0]</text></g>\n";
+		$document .= "<g><rect height=\"$h\" width=\"$w\" rx=\"0.44194168\" ry=\"0.31694031\" x=\"$bx\" y=\"$by\" style=\"opacity:1;fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:0.25;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:0;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1\" /><text x=\"$midx\" y=\"$midy\" dominant-baseline=\"central\" style=\"font-size:0.6934762px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:100%;writing-mode:lr-tb;text-anchor:middle;opacity:1;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans;-inkscape-font-specification:Bitstream Vera Sans\">$rmrow->[0]</text></g>\n";
 		$usedRooms{$rmrow->[0]}= 1;
 	    }
 	}
     }
     if ($people == 1) {
-	my $plp = $dbh->selectall_arrayref("select x,y,label from placed_item_table, placed_item_update_table where placed_item_table.last_update = placed_item_update_table.update_id and placed_item_table.item_def_id=47 and deleted = false and floor_id = $floor");
+	my $plp = $dbh->selectall_arrayref("select x*$scale,y*$scale,label from placed_item_table, placed_item_update_table where placed_item_table.last_update = placed_item_update_table.update_id and placed_item_table.item_def_id=47 and deleted = false and floor_id = $floor");
 	foreach my $plprow (@$plp) {
 	    my ($x,$y,$label) = @$plprow;
 	    $x *= -1;
 	    $document .= "<g>";
-	    my ($ws,$hs) = (2.5195167/1.5,1.265015/1.5);
+	    my ($ws,$hs) = (2.5195167/1.5*$scale,1.265015/1.5*$scale);
 	    my ($rx,$ry) = ($ws*0.125,$ws*0.125);
-	    my ($xs,$ys) = ($x - $ws/2, $y - $hs/2 - 0.08);
-	    $document .= "<rect style=\"opacity:1;fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:0.04;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:0;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1\" height=\"$hs\" width=\"$ws\" x=\"$xs\" y=\"$ys\" ry=\"$ry\" rx=\"$rx\" />";
-	    $document .= "<text x=\"$x\" y=\"$y\" dominant-baseline=\"central\" style=\"font-size:0.4px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:100%;writing-mode:lr-tb;text-anchor:middle;opacity:1;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:DejaVu Sans;inkscape-font-specification:DejaVu Sans\">$label</text></g>\n";
+	    my ($xs,$ys) = ($x - $ws/2, $y - $hs/2 - 1.1);
+	    $document .= "<rect style=\"opacity:1;fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:0.25;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:0;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1\" height=\"$hs\" width=\"$ws\" x=\"$xs\" y=\"$ys\" ry=\"$ry\" rx=\"$rx\" />";
+	    $document .= "<text x=\"$x\" y=\"$y\" dominant-baseline=\"central\" style=\"font-size:4px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:100%;writing-mode:lr-tb;text-anchor:middle;opacity:1;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:DejaVu Sans;inkscape-font-specification:DejaVu Sans\">$label</text></g>\n";
 	}
 
     }
