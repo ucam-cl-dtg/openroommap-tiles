@@ -1,3 +1,13 @@
+#*******************************************************************************
+# Copyright 2014 Digital Technology Group, Computer Laboratory
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License.  You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and limitations under the License.
+#*******************************************************************************
 # for floor in `seq 2 -1 0`; do perl t2.pl $floor > map.svg; for a in `seq 0 1 5`; do WIDTH=$(( (1<<$a)*256 )); inkscape map.svg -e map.png -w $WIDTH -b "#FFFFFF"; convert -crop 256x map.png tile-$floor-$a-%d.png; for b in tile-$floor-$a-*; do convert -crop x256 $b sub`basename $b .png`-%d.png;done;rm tile-*; done; done
 
 # select min(x),min(y),max(x),max(y) from (select t2.maxx -t1.x as x ,t2.maxy-t1.y as y from floorpoly_table t1, (select max(x) as maxx,max(y) as maxy from floorpoly_table) t2 where polyid = (select polyid from room_table natural join roompoly_table where name ='SN13')) t2;
